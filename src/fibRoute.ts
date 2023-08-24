@@ -1,15 +1,22 @@
-// Endpoint for querying the fibonacci numbers
+import { Request, Response } from 'express';
+import fibonacci from './fib';
 
-const fibonacci = require("./fib");
+export default (req: Request, res: Response): void => {
+  const num: number = parseInt(req.params.num, 10);
 
-export default (req, res) => {
-  const { num } = req.params;
+  // Adding a NaN check for more robustness
+  if (isNaN(num)) {
+    res.status(400).send('Invalid number provided');
+    return;
+  }
 
-  const fibN = fibonacci(parseInt(num));
-  let result = `fibonacci(${num}) is ${fibN}`;
+  const fibN: number = fibonacci(num);
+  let result: string;
 
   if (fibN < 0) {
     result = `fibonacci(${num}) is undefined`;
+  } else {
+    result = `fibonacci(${num}) is ${fibN}`;
   }
 
   res.send(result);
